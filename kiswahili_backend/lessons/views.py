@@ -13,7 +13,7 @@ from .serializers import (
 from .permissions import IsTeacher, IsStudent
 
 class StrandViewSet(viewsets.ModelViewSet):
-    queryset = Strand.bjects.all()
+    queryset = Strand.objects.all()
     serializer_class = StrandSerializer
     permission_classes = [IsAuthenticated]
 
