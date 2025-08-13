@@ -1,0 +1,34 @@
+[
+    {"model":"lessons.strand","pk":1,"fields":{"name":"Msamiati","grade":"PP2"}},
+    {"model":"lessons.substrand","pk":1,"fields":{"strand":1,"name":"Wanyama"}},
+    {
+      "model":"lessons.lesson","pk":1,
+      "fields":{
+        "strand":1,"sub_strand":1,"title":"Majina ya Wanyama",
+        "objective":"Mwanafunzi atatambua na kutamka majina ya wanyama 5.",
+        "content":{
+          "steps":[
+            {"type":"image_word_audio","items":[
+              {"word":"paka","image":"paka.png","audio":"paka.mp3"},
+              {"word":"mbwa","image":"mbwa.png","audio":"mbwa.mp3"}
+            ]},
+            {"type":"game_matching"},
+            {"type":"oral_practice","prompt":"Sema: 'Huyu ni paka.'"}
+          ]
+        },
+        "is_active":true
+      }
+    },
+    {
+      "model":"lessons.question","pk":1,
+      "fields":{"lesson":1,"qtype":"mcq","prompt":"Ni mnyama gani huyu?",
+        "data":{"image":"paka.png","options":["paka","mbwa","kuku"],"answer":"paka"},
+        "marks":1,"order":1}
+    },
+    {
+      "model":"lessons.question","pk":2,
+      "fields":{"lesson":1,"qtype":"fill","prompt":"Andika neno ______ (cat).",
+        "data":{"answer":"paka"},"marks":1,"order":2}
+    }
+  ]
+  
