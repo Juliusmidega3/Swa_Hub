@@ -1,11 +1,8 @@
-// src/pages/Lessons.jsx
-function TeacherPortal() {
+export default function TeacherPortal() {
   return (
     <div>
       <h1>Teacher Portal</h1>
-      <p>Welcome to the lessons section.</p>
+      <p>Teachers can manage lessons, tests, and student results here.</p>
     </div>
   );
 }
-
-export default TeacherPortal;

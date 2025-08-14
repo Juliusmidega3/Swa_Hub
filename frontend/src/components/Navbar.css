@@ -1,0 +1,117 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #4FC3F7; /* Bright blue */
+  padding: 12px 20px;
+  border-bottom: 4px solid #FFEB3B; /* Yellow accent */
+  border-radius: 0 0 15px 15px;
+  position: relative;
+}
+
+.logo {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 2rem;
+  color: #FFFFFF;
+  text-shadow: 2px 2px #F44336;
+}
+
+/* Nav links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 16px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 1.1rem;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #FFEB3B; /* Yellow */
+  color: #4FC3F7; /* Blue text */
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-links li a:hover {
+  background: #F44336; /* Red */
+  color: #FFFFFF;
+  transform: scale(1.1);
+}
+
+.nav-links li a.active {
+  background: #BA68C8; /* Purple */
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* Hamburger menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.hamburger .bar {
+  width: 25px;
+  height: 3px;
+  background-color: #FFFFFF;
+  transition: all 0.3s ease;
+}
+
+/* Transform bars into X when open */
+.hamburger .bar.open:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger .bar.open:nth-child(2) {
+  opacity: 0;
+}
+.hamburger .bar.open:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #4FC3F7;
+    width: 200px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    border-radius: 0 0 10px 10px;
+    padding: 10px 0;
+    z-index: 1000;
+  }
+
+  .nav-links.open {
+    transform: translateX(0);
+  }
+
+  .nav-links li {
+    text-align: center;
+    margin: 10px 0;
+  }
+}
+
+.logout-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Comic Sans MS", cursive;
+}
+
+.logout-btn:hover {
+  background: #e60000;
+}

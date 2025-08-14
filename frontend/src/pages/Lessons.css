@@ -1,0 +1,62 @@
+.lessons-page {
+  padding: 20px;
+  font-family: "Comic Sans MS", cursive;
+}
+
+.lessons-page h2 {
+  text-align: center;
+  color: #4FC3F7;
+}
+
+.lessons-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.lesson-card {
+  background: #FFEB3B; /* bright yellow */
+  color: #4FC3F7; /* blue text */
+  border-radius: 15px;
+  padding: 15px;
+  min-width: 200px;
+  max-width: 250px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lesson-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+
+.lesson-card h3 {
+  font-size: 1.2rem;
+}
+
+.lesson-card p {
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lessons-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lesson-card {
+    width: 80%;
+    margin-bottom: 15px;
+  }
+}
+
+.loading, .error {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #F44336;
+}

@@ -1,0 +1,84 @@
+.dashboard {
+  padding: 20px;
+  font-family: "Comic Sans MS", cursive;
+}
+
+.dashboard h2 {
+  color: #4FC3F7;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  flex: 1 1 200px;
+  min-width: 150px;
+  max-width: 250px;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+
+.card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 2rem;
+  margin-top: 5px;
+}
+
+/* Distinct backgrounds per card */
+.card.lessons {
+  background: #FF7043; /* Orange */
+}
+
+.card.tests {
+  background: #66BB6A; /* Green */
+}
+
+.card.teachers {
+  background: #42A5F5; /* Blue */
+}
+
+/* Icon animation */
+.icon {
+  font-size: 3rem;
+  animation: bounce 1.5s infinite alternate;
+  margin-bottom: 10px;
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 80%;
+    margin-bottom: 15px;
+  }
+}

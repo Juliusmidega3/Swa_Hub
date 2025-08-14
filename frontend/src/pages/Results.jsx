@@ -1,11 +1,8 @@
-// src/pages/Lessons.jsx
-function Results() {
+export default function Results() {
   return (
     <div>
-      <h1>Lessons Page</h1>
-      <p>Welcome to the lessons section.</p>
+      <h1>Results</h1>
+      <p>Your performance results will appear here.</p>
     </div>
   );
 }
-
-export default Results;

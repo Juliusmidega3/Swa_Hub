@@ -93,3 +93,18 @@ class MeViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     def list(self, request):
         return Response(UserSerializer(request.user).data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def dashboard_data(request):
+    lessons_count = Lesson.objects.filter(is_active=True).count()
+    tests_count = Question.objects.count()  # All questions considered as tests
+    teachers_count = User.objects.filter(profile__role="teacher").count()
+
+    return Response({
+        "lessonsCount": lessons_count,
+        "testsCount": tests_count,
+        "teachersCount": teachers_count
+    })
+

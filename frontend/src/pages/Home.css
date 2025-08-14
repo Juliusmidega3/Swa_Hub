@@ -1,0 +1,39 @@
+.home {
+  text-align: center;
+  padding: 30px;
+  font-family: "Comic Sans MS", cursive;
+}
+
+.home h1 {
+  color: #4FC3F7;
+  font-size: 2.5rem;
+}
+
+.home p {
+  font-size: 1.2rem;
+  margin: 15px 0;
+  color: #66BB6A;
+}
+
+.quick-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  text-decoration: none;
+  background: #FF7043;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 15px;
+  font-size: 1.1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
