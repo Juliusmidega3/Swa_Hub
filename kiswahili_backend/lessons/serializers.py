@@ -54,19 +54,12 @@ class ProgressSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 class TestSerializer(serializers.ModelSerializer):
-    lesson_title = serializers.CharField(source='lesson.title', read_only=True)
-
     class Meta:
         model = Test
-        fields = ['id', 'title', 'lesson', 'lesson_title', 'total_marks', 'date', 'is_active']
-
+        fields = "__all__"
 
 class ResultSerializer(serializers.ModelSerializer):
-    test_title = serializers.CharField(source='test.title', read_only=True)
-    student_name = serializers.CharField()
-
     class Meta:
         model = Result
-        fields = ['id', 'test', 'test_title', 'student_name', 'score', 'feedback', 'created_at']
+        fields = "__all__"

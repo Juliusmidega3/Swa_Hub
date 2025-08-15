@@ -83,25 +83,24 @@ class Progress(models.Model):
     
 
 class Test(models.Model):
-    lesson = models.ForeignKey('Lesson', on_delete=models.CASCADE, related_name='tests')
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="tests")
     title = models.CharField(max_length=255)
-    total_marks = models.IntegerField()
+    total_marks = models.PositiveIntegerField(default=0)
     date = models.DateField()
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.lesson.title} - {self.title}"
-
+        return self.title
 
 class Result(models.Model):
-    test = models.ForeignKey('Test', on_delete=models.CASCADE, related_name='results')
-    student_name = models.CharField(max_length=255)  # Or link to a Student model if you have one
-    score = models.IntegerField()
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="results")
+    student_name = models.CharField(max_length=255)
+    score = models.FloatField(default=0)
     feedback = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.student_name} - {self.test.title} - {self.score}"
+        return f"{self.student_name} - {self.test.title}"
 
 
 # Auto-create Profile

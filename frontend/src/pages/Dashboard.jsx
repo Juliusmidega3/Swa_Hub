@@ -4,7 +4,7 @@ import CountUp from "react-countup";
 import Confetti from "react-confetti";
 import { FaBook, FaPencilAlt, FaChalkboardTeacher, FaTrophy } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import "./Dashboard.css";
+import "../components/styles/Dashboard.css";
 
 const Dashboard = () => {
   const [data, setData] = useState(null);

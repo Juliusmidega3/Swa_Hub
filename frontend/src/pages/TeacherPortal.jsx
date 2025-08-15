@@ -1,133 +1,165 @@
 // src/pages/TeacherPortal.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
+import "../components/styles/TeacherPortal.css";
 
 export default function TeacherPortal() {
-  const [stats, setStats] = useState({ lessons: 0, tests: 0, results: 0 });
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [recentLessons, setRecentLessons] = useState([]);
   const [recentTests, setRecentTests] = useState([]);
   const [recentResults, setRecentResults] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
+  const fetchStats = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/teacher/dashboard-stats/");
+      setStats(response.data);
+
+      // Also store recent items
+      setRecentLessons(response.data.recent_lessons || []);
+      setRecentTests(response.data.recent_tests || []);
+      setRecentResults(response.data.recent_results || []);
+
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching dashboard stats:", err);
+      setError("Failed to load dashboard data.");
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const statsRes = await axiosInstance.get("teacher/dashboard-stats/");
-        setStats(statsRes.data);
-
-        const lessonsRes = await axiosInstance.get("lessons/pp2/?recent=5");
-        setRecentLessons(lessonsRes.data.results || lessonsRes.data);
-
-        const testsRes = await axiosInstance.get("tests/pp2/?recent=5");
-        setRecentTests(testsRes.data.results || testsRes.data);
-
-        const resultsRes = await axiosInstance.get("results/pp2/?recent=5");
-        setRecentResults(resultsRes.data.results || resultsRes.data);
-
-        setError("");
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load dashboard data.");
-      }
-      setLoading(false);
-    };
-
-    fetchDashboard();
+    fetchStats();
   }, []);
 
-  if (loading) return <p>⏳ Loading dashboard...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading) return <p className="teacher-portal">⏳ Loading dashboard...</p>;
+  if (error) return <p className="teacher-portal" style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Teacher Portal Dashboard</h1>
+    <div className="teacher-portal">
+      <h1>🎓 Teacher Portal</h1>
+      <p>Manage lessons, tests, assignments, attendance, and student progress.</p>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="p-4 bg-blue-200 rounded shadow">
-          <h2 className="text-xl font-semibold">Lessons</h2>
-          <p className="text-2xl">{stats.lessons}</p>
-        </div>
-        <div className="p-4 bg-green-200 rounded shadow">
-          <h2 className="text-xl font-semibold">Tests</h2>
-          <p className="text-2xl">{stats.tests}</p>
-        </div>
-        <div className="p-4 bg-yellow-200 rounded shadow">
-          <h2 className="text-xl font-semibold">Results</h2>
-          <p className="text-2xl">{stats.results}</p>
-        </div>
+      {/* Main Stats */}
+      <div className="stats-grid">
+        <StatCard
+          title="Lessons"
+          total={stats.total.lessons_count}
+          pp2={stats.pp2.lessons_count}
+          color="blue"
+          onClick={() => navigate("/teacher-lessons")}
+        />
+        <StatCard
+          title="Tests"
+          total={stats.total.tests_count}
+          pp2={stats.pp2.tests_count}
+          color="green"
+          onClick={() => navigate("/teacher-tests")}
+        />
+        <StatCard
+          title="Results"
+          total={stats.total.results_count}
+          pp2={stats.pp2.results_count}
+          color="yellow"
+          onClick={() => navigate("/teacher-results")}
+        />
       </div>
 
-      {/* Quick Actions */}
-      <div className="flex gap-4 mb-6">
-        <button
-          onClick={() => window.location.href = "/teacher-lessons"}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Manage Lessons
-        </button>
-        <button
-          onClick={() => window.location.href = "/tests"}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Manage Tests
-        </button>
-        <button
-          onClick={() => window.location.href = "/results"}
-          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-        >
-          View Results
-        </button>
+      {/* Feature Sections */}
+      <div className="feature-grid">
+        <FeatureCard
+          title="📋 Attendance Management"
+          description="Mark attendance daily and track student attendance."
+          onClick={() => navigate("/teacher-attendance")}
+        />
+        <FeatureCard
+          title="📝 Lesson Planning"
+          description="Plan weekly/monthly lessons with resources."
+          onClick={() => navigate("/teacher-lesson-plans")}
+        />
+        <FeatureCard
+          title="🖊️ Assignments & Tests"
+          description="Create assignments or tests and auto-grade where possible."
+          onClick={() => navigate("/teacher-assignments")}
+        />
+        <FeatureCard
+          title="📈 Student Progress"
+          description="Track student performance and identify who needs help."
+          onClick={() => navigate("/teacher-progress")}
+        />
+        <FeatureCard
+          title="📨 Parent Communication"
+          description="Send quick updates to parents about student performance."
+          onClick={() => navigate("/teacher-parents")}
+        />
+        <FeatureCard
+          title="📄 Reports"
+          description="Generate and download progress, attendance, and results reports."
+          onClick={() => navigate("/teacher-reports")}
+        />
+        <FeatureCard
+          title="🏆 Rewards & Badges"
+          description="Reward students for good performance and completion."
+          onClick={() => navigate("/teacher-rewards")}
+        />
       </div>
 
-      {/* Recent Lessons */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-2">Recent Lessons</h2>
-        {recentLessons.length === 0 ? (
-          <p>No recent lessons.</p>
-        ) : (
-          <ul className="list-disc pl-5">
-            {recentLessons.map((lesson) => (
-              <li key={lesson.id}>
-                {lesson.title} ({lesson.date})
-              </li>
-            ))}
-          </ul>
+      {/* Recent Section */}
+      <div className="recent-section">
+        {recentLessons.length > 0 && (
+          <>
+            <h2>Recent Lessons</h2>
+            <ul>
+              {recentLessons.map(l => <li key={l.id}>{l.title}</li>)}
+            </ul>
+          </>
+        )}
+        {recentTests.length > 0 && (
+          <>
+            <h2>Recent Tests</h2>
+            <ul>
+              {recentTests.map(t => <li key={t.id}>{t.title} - {t.lesson}</li>)}
+            </ul>
+          </>
+        )}
+        {recentResults.length > 0 && (
+          <>
+            <h2>Recent Results</h2>
+            <ul>
+              {recentResults.map(r => (
+                <li key={r.id}>{r.student_name} - {r.test} - Score: {r.score}</li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
+    </div>
+  );
+}
 
-      {/* Recent Tests */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-2">Recent Tests</h2>
-        {recentTests.length === 0 ? (
-          <p>No recent tests.</p>
-        ) : (
-          <ul className="list-disc pl-5">
-            {recentTests.map((test) => (
-              <li key={test.id}>
-                {test.title} ({test.date})
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+// Reusable stat card
+function StatCard({ title, total, pp2, color, onClick }) {
+  return (
+    <div className={`stat-card ${color}`} onClick={onClick}>
+      <h2>{title}</h2>
+      <p>Total: {total}</p>
+      <p>PP2: {pp2}</p>
+      <button className="btn">View {title}</button>
+    </div>
+  );
+}
 
-      {/* Recent Results */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-2">Recent Student Results</h2>
-        {recentResults.length === 0 ? (
-          <p>No recent results.</p>
-        ) : (
-          <ul className="list-disc pl-5">
-            {recentResults.map((result) => (
-              <li key={result.id}>
-                {result.student_name}: {result.score} / {result.total} ({result.date})
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+// Reusable feature card
+function FeatureCard({ title, description, onClick }) {
+  return (
+    <div className="feature-card" onClick={onClick}>
+      <h3>{title}</h3>
+      <p>{description}</p>
     </div>
   );
 }

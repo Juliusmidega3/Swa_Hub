@@ -147,26 +147,92 @@ def add_lesson(request):
     return render(request, 'lessons/add_lesson.html', {'form': form})
 
 
-# Test ViewSet
-class TestViewSet(viewsets.ModelViewSet):
-    queryset = Test.objects.all()
-    serializer_class = TestSerializer
-    permission_classes = [IsAuthenticated]
 
-
-# Result ViewSet
 class ResultViewSet(viewsets.ModelViewSet):
     queryset = Result.objects.all()
     serializer_class = ResultSerializer
     permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=["get"], url_path="pp2")
+    def pp2_results(self, request):
+        # Filter results related to PP2 lessons
+        qs = self.get_queryset().filter(test__lesson__strand__grade="PP2")
+        page = self.paginate_queryset(qs)
+        ser = self.get_serializer(page, many=True)
+        return self.get_paginated_response(ser.data)
+
+
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=["get"], url_path="pp2")
+    def pp2_tests(self, request):
+        # Filter by PP2 grade using lesson relationship
+        qs = self.get_queryset().filter(lesson__strand__grade="PP2")
+        page = self.paginate_queryset(qs)
+        ser = self.get_serializer(page, many=True)
+        return self.get_paginated_response(ser.data)
+
+
 
 # Dashboard stats
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard_stats(request):
+    # Total counts
+    total_lessons = Lesson.objects.count()
+    total_tests = Test.objects.count()
+    total_results = Result.objects.count()
+
+    # PP2-specific counts
+    pp2_lessons = Lesson.objects.filter(strand__grade="PP2").count()
+    pp2_tests = Test.objects.filter(lesson__strand__grade="PP2").count()
+    pp2_results = Result.objects.filter(test__lesson__strand__grade="PP2").count()
+
+
     return Response({
-        "lessons_count": Lesson.objects.count(),
-        "tests_count": Test.objects.count(),
-        "results_count": Result.objects.count()
+        "total": {
+            "lessons_count": total_lessons,
+            "tests_count": total_tests,
+            "results_count": total_results
+        },
+        "pp2": {
+            "lessons_count": pp2_lessons,
+            "tests_count": pp2_tests,
+            "results_count": pp2_results
+        }
+    })
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def teacher_dashboard_stats(request):
+    """
+    Returns counts and recent items for the teacher portal dashboard.
+    """
+    lessons_count = Lesson.objects.filter(is_active=True).count()
+    tests_count = Test.objects.count()
+    results_count = Result.objects.count()
+
+    recent_lessons = Lesson.objects.filter(is_active=True).order_by("-date")[:5]
+    recent_tests = Test.objects.order_by("-date")[:5]
+    recent_results = Result.objects.select_related("test", "test__lesson").order_by("-created_at")[:5]
+
+    return Response({
+        "lessons_count": lessons_count,
+        "tests_count": tests_count,
+        "results_count": results_count,
+        "recent_lessons": [
+            {"id": l.id, "title": l.title, "date": l.date} for l in recent_lessons
+        ],
+        "recent_tests": [
+            {"id": t.id, "title": t.title, "lesson": t.lesson.title, "date": t.date} for t in recent_tests
+        ],
+        "recent_results": [
+            {"id": r.id, "student_name": r.student_name, "test": r.test.title, "score": r.score} for r in recent_results
+        ]
     })
