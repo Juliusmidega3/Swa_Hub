@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Strand, SubStrand, Lesson, Question, Assignment, Submission, Progress
+from .models import Profile, Strand, SubStrand, Lesson, Question, Assignment, Submission, Progress, Test, Result
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,6 +40,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
         fields = "__all__"
+        read_only_fields = ['class_assigned']
 
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,3 +52,21 @@ class ProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Progress
         fields = "__all__"
+
+
+
+class TestSerializer(serializers.ModelSerializer):
+    lesson_title = serializers.CharField(source='lesson.title', read_only=True)
+
+    class Meta:
+        model = Test
+        fields = ['id', 'title', 'lesson', 'lesson_title', 'total_marks', 'date', 'is_active']
+
+
+class ResultSerializer(serializers.ModelSerializer):
+    test_title = serializers.CharField(source='test.title', read_only=True)
+    student_name = serializers.CharField()
+
+    class Meta:
+        model = Result
+        fields = ['id', 'test', 'test_title', 'student_name', 'score', 'feedback', 'created_at']

@@ -8,6 +8,7 @@ import Results from "./pages/Results";
 import TeacherPortal from "./pages/TeacherPortal";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import TeacherLessons from "./pages/TeacherLessons"; // ⬅️ import the new teacher lessons page
 
 // Helper component to protect routes
 const PrivateRoute = ({ children }) => {
@@ -21,6 +22,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
+        
         <Route
           path="/"
           element={
@@ -29,6 +31,8 @@ function App() {
             </PrivateRoute>
           }
         />
+        
+        {/* Student Lessons */}
         <Route
           path="/lessons"
           element={
@@ -37,6 +41,17 @@ function App() {
             </PrivateRoute>
           }
         />
+        
+        {/* Teacher Lessons */}
+        <Route
+          path="/teacher-lessons"
+          element={
+            <PrivateRoute>
+              <TeacherLessons />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/tests"
           element={
@@ -45,6 +60,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        
         <Route
           path="/results"
           element={
@@ -53,6 +69,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        
         <Route
           path="/teacher"
           element={
@@ -61,6 +78,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        
         <Route
           path="/dashboard"
           element={

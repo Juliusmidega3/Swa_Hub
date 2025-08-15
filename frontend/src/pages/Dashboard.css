@@ -27,6 +27,7 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -55,6 +56,11 @@
 
 .card.teachers {
   background: #42A5F5; /* Blue */
+}
+
+.card.results {
+  background: #FFD54F; /* Golden Yellow */
+  color: #333; /* Better text contrast */
 }
 
 /* Icon animation */

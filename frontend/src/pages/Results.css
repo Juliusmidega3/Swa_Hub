@@ -1,0 +1,56 @@
+.results-page {
+  padding: 20px;
+  font-family: "Comic Sans MS", cursive;
+}
+
+.results-page h2 {
+  text-align: center;
+  color: #4FC3F7;
+}
+
+.results-table {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #FFEB3B;
+  color: #4FC3F7;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 2px solid #4FC3F7;
+}
+
+th {
+  background: #4FC3F7;
+  color: white;
+}
+
+tr:hover {
+  background-color: rgba(79, 195, 247, 0.2);
+}
+
+.no-results {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #F44336;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #0288D1;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.9rem;
+  }
+}

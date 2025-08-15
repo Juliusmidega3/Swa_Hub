@@ -8,6 +8,7 @@
   color: #4FC3F7;
 }
 
+/* Grid layout */
 .lessons-grid {
   display: flex;
   flex-wrap: wrap;
@@ -16,9 +17,10 @@
   margin-top: 20px;
 }
 
+/* Card base style */
 .lesson-card {
-  background: #FFEB3B; /* bright yellow */
-  color: #4FC3F7; /* blue text */
+  background: linear-gradient(145deg, #FFEB3B, #FFF176); /* soft yellow gradient */
+  color: #4FC3F7;
   border-radius: 15px;
   padding: 15px;
   min-width: 200px;
@@ -26,20 +28,55 @@
   text-align: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Fun hover effect */
 .lesson-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  transform: scale(1.08) rotate(-1deg);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
 
+/* Title & icon */
 .lesson-card h3 {
   font-size: 1.2rem;
+  margin-bottom: 8px;
 }
 
+.lesson-card::before {
+  content: "📘"; /* default book emoji */
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Subject-specific colors & icons */
+.lesson-card.math::before {
+  content: "🔢";
+}
+.lesson-card.science::before {
+  content: "🔬";
+}
+.lesson-card.english::before {
+  content: "📖";
+}
+.lesson-card.art::before {
+  content: "🎨";
+}
+
+/* Text */
 .lesson-card p {
   font-size: 1rem;
   margin-top: 8px;
+}
+
+/* Loading / error */
+.loading, .error, .no-data {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #F44336;
+  margin-top: 15px;
 }
 
 /* Responsive */
@@ -53,10 +90,4 @@
     width: 80%;
     margin-bottom: 15px;
   }
-}
-
-.loading, .error {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #F44336;
 }

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 from django.utils.translation import gettext_lazy as _
 
 class Role(models.TextChoices):
@@ -24,13 +25,19 @@ class SubStrand(models.Model):
     def __str__(self): return f"{self.strand.grade} - {self.strand.name} - {self.name}"
 
 class Lesson(models.Model):
+    class_name = models.CharField(max_length=50, default="Unassigned")  # ✅ Default for existing rows
+    description = models.TextField(blank=True, null=True)
+    date = models.DateField(default=datetime.date.today)
     strand = models.ForeignKey(Strand, on_delete=models.CASCADE, related_name="lessons")
     sub_strand = models.ForeignKey(SubStrand, on_delete=models.CASCADE, related_name="lessons")
-    title = models.CharField(max_length=160)          # e.g., Majina ya Wanyama
+    title = models.CharField(max_length=255)          # e.g., Majina ya Wanyama
     objective = models.TextField(blank=True)          # learning outcome
     content = models.JSONField(default=dict)          # steps/games/audio refs
     is_active = models.BooleanField(default=True)
-    def __str__(self): return self.title
+
+    def __str__(self):
+        return self.title
+
 
 class QuestionType(models.TextChoices):
     MCQ = "mcq", _("Multiple Choice")
@@ -73,6 +80,29 @@ class Progress(models.Model):
     stars = models.PositiveIntegerField(default=0)    # gamified
     last_step = models.PositiveIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
+    
+
+class Test(models.Model):
+    lesson = models.ForeignKey('Lesson', on_delete=models.CASCADE, related_name='tests')
+    title = models.CharField(max_length=255)
+    total_marks = models.IntegerField()
+    date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.lesson.title} - {self.title}"
+
+
+class Result(models.Model):
+    test = models.ForeignKey('Test', on_delete=models.CASCADE, related_name='results')
+    student_name = models.CharField(max_length=255)  # Or link to a Student model if you have one
+    score = models.IntegerField()
+    feedback = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.student_name} - {self.test.title} - {self.score}"
+
 
 # Auto-create Profile
 from django.db.models.signals import post_save

@@ -1,14 +1,16 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from .forms import LessonForm
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .models import Strand, SubStrand, Lesson, Question, Assignment, Submission, Progress
+from .models import Strand, SubStrand, Lesson, Question, Assignment, Submission, Progress, Test, Result
 from .serializers import (
     StrandSerializer, SubStrandSerializer, LessonSerializer, QuestionSerializer,
-    AssignmentSerializer, SubmissionSerializer, ProgressSerializer, UserSerializer
+    AssignmentSerializer, SubmissionSerializer, ProgressSerializer, UserSerializer, TestSerializer, ResultSerializer
 )
 from .permissions import IsTeacher, IsStudent
 
@@ -39,10 +41,35 @@ class QuestionViewSet(viewsets.ModelViewSet):
     serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticated, IsTeacher]
 
+
 class AssignmentViewSet(viewsets.ModelViewSet):
-    queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # If the user is a student
+        if hasattr(user, 'student'):
+            student_class = user.student.enrolled_class
+            return Assignment.objects.filter(class_assigned=student_class)
+
+        # If the user is a teacher, show only their class's assignments
+        elif hasattr(user, 'teacher'):
+            return Assignment.objects.filter(class_assigned=user.teacher.class_assigned)
+
+        # If admin/staff, show all
+        return Assignment.objects.all()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+
+        # Teacher can only create for their assigned class
+        if hasattr(user, 'teacher'):
+            serializer.save(class_assigned=user.teacher.class_assigned)
+        else:
+            serializer.save()
+
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.select_related("student","lesson").all()
@@ -108,3 +135,38 @@ def dashboard_data(request):
         "teachersCount": teachers_count
     })
 
+
+def add_lesson(request):
+    if request.method == 'POST':
+        form = LessonForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lesson_list')  # Change to your lesson list URL name
+    else:
+        form = LessonForm()
+    return render(request, 'lessons/add_lesson.html', {'form': form})
+
+
+# Test ViewSet
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
+    permission_classes = [IsAuthenticated]
+
+
+# Result ViewSet
+class ResultViewSet(viewsets.ModelViewSet):
+    queryset = Result.objects.all()
+    serializer_class = ResultSerializer
+    permission_classes = [IsAuthenticated]
+
+
+# Dashboard stats
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def dashboard_stats(request):
+    return Response({
+        "lessons_count": Lesson.objects.count(),
+        "tests_count": Test.objects.count(),
+        "results_count": Result.objects.count()
+    })
