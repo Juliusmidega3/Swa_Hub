@@ -1,10 +1,9 @@
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from .forms import LessonForm
 from django.utils import timezone
 
 from .models import (
@@ -16,7 +15,8 @@ from .serializers import (
     QuestionSerializer, AssignmentSerializer, SubmissionSerializer, ProgressSerializer,
     UserSerializer, TestSerializer, ResultSerializer, AttendanceSerializer, StudentSerializer
 )
-from .permissions import IsTeacher, IsStudent
+from .permissions import IsTeacher
+from .forms import LessonForm
 
 
 # -------------------------
@@ -78,17 +78,11 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, 'student'):
-            return Assignment.objects.filter(class_assigned=user.student.enrolled_class)
-        elif hasattr(user, 'teacher'):
-            return Assignment.objects.filter(class_assigned=user.teacher.class_assigned)
+            return Assignment.objects.filter(lesson__class_name=user.student.enrolled_class)
         return Assignment.objects.all()
 
     def perform_create(self, serializer):
-        user = self.request.user
-        if hasattr(user, 'teacher'):
-            serializer.save(class_assigned=user.teacher.class_assigned)
-        else:
-            serializer.save()
+        serializer.save()
 
 
 # -------------------------
@@ -253,11 +247,6 @@ def teacher_dashboard_stats(request):
 # Attendance
 # -------------------------
 class AttendanceViewSet(viewsets.ModelViewSet):
-    """
-    CRUD for Attendance
-    - Teachers: only see students in their class
-    - Admin/staff: see all
-    """
     serializer_class = AttendanceSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -272,7 +261,6 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def today(self, request):
-        """Return today's attendance records"""
         today = timezone.localdate()
         qs = self.get_queryset().filter(date=today).order_by("student__full_name")
         return Response(self.get_serializer(qs, many=True).data)

@@ -16,17 +16,19 @@ from lessons.views import (
     MeViewSet,
     dashboard_data,
     dashboard_stats,
+    teacher_dashboard_stats,
     TestViewSet,
     ResultViewSet,
     AttendanceViewSet,
     LessonPlanViewSet,
     StudentViewSet,
-    
 )
 
 router = DefaultRouter()
 
-# ✅ Register ViewSets with basename
+# -------------------------
+# Register ViewSets
+# -------------------------
 router.register(r"strands", StrandViewSet, basename="strand")
 router.register(r"sub-strands", SubStrandViewSet, basename="substrand")
 router.register(r"lessons", LessonViewSet, basename="lesson")
@@ -41,21 +43,23 @@ router.register(r"lesson-plans", LessonPlanViewSet, basename="lessonplan")
 router.register(r"students", StudentViewSet, basename="student")
 router.register(r"me", MeViewSet, basename="me")
 
+# -------------------------
+# URL Patterns
+# -------------------------
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # API routes (router)
+    # API routes
     path("api/", include(router.urls)),
 
-
-    # Authentication (JWT)
+    # JWT Authentication
     path("api/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 
     # Dashboard
     path("api/dashboard-data/", dashboard_data, name="dashboard-data"),
-    path("api/teacher/dashboard-stats/", dashboard_stats, name="teacher-dashboard-stats"),
+    path("api/teacher/dashboard-stats/", teacher_dashboard_stats, name="teacher-dashboard-stats"),
 ]
 
-# Media file serving (only for development)
+# Serve media files (development only)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

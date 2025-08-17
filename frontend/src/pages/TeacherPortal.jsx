@@ -80,7 +80,7 @@ export default function TeacherPortal() {
         <FeatureCard
           title="📝 Lesson Planning"
           description="Plan weekly/monthly lessons with resources."
-          onClick={() => navigate("/teacher-lesson-plans")}
+          onClick={() => navigate("/teacher-assignments-tests")}
         />
         <FeatureCard
           title="🖊️ Assignments & Tests"
