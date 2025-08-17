@@ -1,11 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from datetime import date
 from django.utils.translation import gettext_lazy as _
 
 class Role(models.TextChoices):
     STUDENT = "student", _("Student")
     TEACHER = "teacher", _("Teacher")
+
+
+class Student(models.Model):
+    full_name = models.CharField(max_length=100)
+    enrolled_class = models.CharField(max_length=20)
+    gender = models.CharField(max_length=10, default="Unknown")
+
+    def __str__(self):
+        return self.full_name
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
@@ -111,3 +123,25 @@ from django.dispatch import receiver
 def create_profile(sender, instance, created, **kwargs):
     if created and not hasattr(instance, "profile"):
         Profile.objects.create(user=instance, role=Role.STUDENT)
+
+
+#Attendance functionality
+
+class Attendance(models.Model):
+    STATUS_CHOICES = [
+        ("present", "Present"),
+        ("absent", "Absent"),
+        ("late", "Late"),
+    ]
+    
+    student = models.ForeignKey("Student", on_delete=models.CASCADE)
+    teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    date = models.DateField(default=date.today)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ("student", "date")  # Prevent duplicate records
+
+    def __str__(self):
+        return f"{self.student} - {self.date} - {self.status}"

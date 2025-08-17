@@ -8,6 +8,8 @@ import Results from "./pages/Results";
 import TeacherPortal from "./pages/TeacherPortal";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import TeacherAttendance from "./pages/TeacherAttendance";
+import { Toaster } from "react-hot-toast";
 import TeacherLessons from "./pages/TeacherLessons"; // ⬅️ import the new teacher lessons page
 
 // Helper component to protect routes
@@ -19,10 +21,15 @@ const PrivateRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      {/* Navbar appears on all pages */}
       <Navbar />
+
+      {/* Global Toaster (toast notifications work everywhere) */}
+      <Toaster position="top-right" reverseOrder={false} />
+
       <Routes>
         <Route path="/login" element={<Login />} />
-        
+
         <Route
           path="/"
           element={
@@ -31,7 +38,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        
+
         {/* Student Lessons */}
         <Route
           path="/lessons"
@@ -41,7 +48,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        
+
         {/* Teacher Lessons */}
         <Route
           path="/teacher-lessons"
@@ -60,7 +67,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        
+
         <Route
           path="/results"
           element={
@@ -69,7 +76,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        
+
         <Route
           path="/teacher"
           element={
@@ -78,7 +85,16 @@ function App() {
             </PrivateRoute>
           }
         />
-        
+
+        <Route
+          path="/teacher-attendance"
+          element={
+            <PrivateRoute>
+              <TeacherAttendance />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/dashboard"
           element={

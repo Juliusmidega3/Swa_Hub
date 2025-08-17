@@ -1,0 +1,38 @@
+[
+  {
+    "model": "lessons.student",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "full_name": "Alice Mwangi",
+      "enrolled_class": "PP2"
+    }
+  },
+  {
+    "model": "lessons.student",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "full_name": "Brian Otieno",
+      "enrolled_class": "PP2"
+    }
+  },
+  {
+    "model": "lessons.student",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "full_name": "Cecilia Njeri",
+      "enrolled_class": "PP2"
+    }
+  },
+  {
+    "model": "lessons.student",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "full_name": "David Kariuki",
+      "enrolled_class": "PP2"
+    }
+  }
+]

@@ -4,15 +4,24 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from .models import Attendance
 from .forms import LessonForm
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .models import Strand, SubStrand, Lesson, Question, Assignment, Submission, Progress, Test, Result
+from .models import Strand, SubStrand, Lesson, Question, Assignment, Submission, Progress, Test, Result, Attendance, Student
 from .serializers import (
     StrandSerializer, SubStrandSerializer, LessonSerializer, QuestionSerializer,
-    AssignmentSerializer, SubmissionSerializer, ProgressSerializer, UserSerializer, TestSerializer, ResultSerializer
+    AssignmentSerializer, SubmissionSerializer, ProgressSerializer, UserSerializer, TestSerializer, ResultSerializer,  AttendanceSerializer, StudentSerializer
 )
 from .permissions import IsTeacher, IsStudent
+from django.utils import timezone
+from django.utils.timezone import now
+
+
+class StudentViewSet(viewsets.ModelViewSet):
+    queryset = Student.objects.all().order_by("full_name") # or 'id'
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class StrandViewSet(viewsets.ModelViewSet):
     queryset = Strand.objects.all()
@@ -236,3 +245,48 @@ def teacher_dashboard_stats(request):
             {"id": r.id, "student_name": r.student_name, "test": r.test.title, "score": r.score} for r in recent_results
         ]
     })
+
+
+# Attendance ViewSet
+# -----------------------------
+class AttendanceViewSet(viewsets.ModelViewSet):
+    """
+    CRUD for Attendance
+    Teachers see students in their class only
+    Admin/staff see all
+    """
+    serializer_class = AttendanceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # Teachers see students in their assigned class
+        if hasattr(user, "teacher"):
+            student_class = user.teacher.class_assigned
+            return Attendance.objects.filter(student__enrolled_class=student_class).order_by("-date")
+        # Admin/staff see all attendance records
+        return Attendance.objects.all().order_by("-date")
+
+    def perform_create(self, serializer):
+        """
+        Auto-assign the teacher creating the record
+        """
+        serializer.save(teacher=self.request.user)
+
+    @action(detail=False, methods=["get"])
+    def today(self, request):
+        """
+        Returns only today's attendance records
+        """
+        today = timezone.localdate()
+        qs = self.get_queryset().filter(date=today).order_by("student__full_name")
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+    
+@api_view(['GET'])
+def today_attendance(request):
+    from datetime import date
+    today = date.today()
+    attendance_list = Attendance.objects.filter(date=today)
+    data = [{"student": att.student.name, "status": att.status} for att in attendance_list]
+    return Response(data)
