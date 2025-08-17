@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Strand, SubStrand, Lesson, Question, Assignment, Submission, Progress, Test, Result, Student
-from .models import Attendance
+from .models import Profile, Strand, SubStrand, Lesson, Question, Attendance, LessonPlan, Assignment, Submission, Progress, Test, Result, Student
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -82,3 +82,11 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         fields = ["id", "student", "student_name", "teacher", "date", "status", "notes"]
         read_only_fields = ["teacher"]
+
+
+
+class LessonPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LessonPlan
+        fields = '__all__'
+        read_only_fields = ['teacher', 'created_at']

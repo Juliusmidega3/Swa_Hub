@@ -17,7 +17,7 @@ export default function TeacherPortal() {
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get("teacher/dashboard-stats/");
+      const response = await axiosInstance.get("/teacher/dashboard-stats/");
       setStats(response.data);
 
       // Also store recent items

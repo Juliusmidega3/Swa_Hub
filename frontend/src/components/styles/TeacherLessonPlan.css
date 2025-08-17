@@ -1,0 +1,282 @@
+/* TeacherLessonPlan.css */
+
+/* Container */
+.lessonplan-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Inter", sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+/* Title Row */
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e3a8a; /* blue-ish */
+}
+
+.create-btn {
+  background-color: #1e3a8a;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-btn:hover {
+  background-color: #374db5;
+}
+
+/* Search Input */
+.lessonplan-container input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.lessonplan-container input[type="text"]:focus {
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+}
+
+/* Lesson Table */
+.lesson-list {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.lesson-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-table th,
+.lesson-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.lesson-table th {
+  background-color: #1e3a8a;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.lesson-table tr:nth-child(even) {
+  background-color: #f4f4f4;
+}
+
+.lesson-table tr.clickable-row:hover {
+  background-color: #e0e7ff;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 4px 10px;
+  margin-right: 6px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.edit-btn {
+  background-color: #fbbf24;
+  color: #1f2937;
+}
+
+.edit-btn:hover {
+  background-color: #f59e0b;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #b91c1c;
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+}
+
+/* Expanded Row */
+.expanded-row td {
+  background-color: #eef2ff;
+}
+
+.expanded-content p {
+  margin: 6px 0;
+}
+
+/* Form Container */
+.form-container {
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+}
+
+.slide-down {
+  max-height: 2000px; /* large enough to fit form */
+}
+
+.slide-up {
+  max-height: 0;
+}
+
+.form-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.form-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #1e3a8a;
+}
+
+/* Form Sections */
+.form-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+}
+
+.form-section .flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #4b5563;
+}
+
+.form-section input,
+.form-section textarea {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.form-section input:focus,
+.form-section textarea:focus {
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+}
+
+.form-section textarea {
+  resize: vertical;
+  min-height: 50px;
+}
+
+.form-section textarea[name="lesson_development"] {
+  min-height: 120px;
+}
+
+.form-section textarea[name="introduction"] {
+  min-height: 80px;
+}
+
+.form-section textarea[name="conclusion"] {
+  min-height: 70px;
+}
+
+.form-section textarea[name="assignment"] {
+  min-height: 90px;
+}
+
+.form-section textarea[name="reflection"] {
+  min-height: 80px;
+}
+
+/* Form Buttons */
+.form-buttons {
+  margin-top: 15px;
+  display: flex;
+  gap: 12px;
+}
+
+.submit-btn {
+  background-color: #1e3a8a;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #374db5;
+}
+
+.cancel-btn {
+  background-color: #e5e7eb;
+  color: #374151;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .form-section {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-section {
+    grid-template-columns: 1fr;
+  }
+
+  .title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .create-btn {
+    margin-top: 10px;
+  }
+}

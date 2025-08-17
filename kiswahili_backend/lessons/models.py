@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import datetime
 from datetime import date
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 class Role(models.TextChoices):
     STUDENT = "student", _("Student")
@@ -18,23 +19,31 @@ class Student(models.Model):
         return self.full_name
 
 
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     role = models.CharField(max_length=20, choices=Role.choices)
     school = models.CharField(max_length=120, blank=True)
-    def __str__(self): return f"{self.user.username} ({self.role})"
+
+    def __str__(self):
+        return f"{self.user.username} ({self.role})"
+
 
 # CBC structure
 class Strand(models.Model):
     name = models.CharField(max_length=120)            # e.g., Kusikiliza na Kuzungumza
     grade = models.CharField(max_length=10, default="PP2")
-    def __str__(self): return f"{self.grade} - {self.name}"
+
+    def __str__(self):
+        return f"{self.grade} - {self.name}"
+
 
 class SubStrand(models.Model):
     strand = models.ForeignKey(Strand, on_delete=models.CASCADE, related_name="sub_strands")
     name = models.CharField(max_length=120)           # e.g., Salamu
-    def __str__(self): return f"{self.strand.grade} - {self.strand.name} - {self.name}"
+
+    def __str__(self):
+        return f"{self.strand.grade} - {self.strand.name} - {self.name}"
+
 
 class Lesson(models.Model):
     class_name = models.CharField(max_length=50, default="Unassigned")  # ✅ Default for existing rows
@@ -58,6 +67,7 @@ class QuestionType(models.TextChoices):
     ORAL = "oral", _("Oral recording")
     UPLOAD = "upload", _("Upload image")
 
+
 class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="questions")
     qtype = models.CharField(max_length=20, choices=QuestionType.choices)
@@ -65,13 +75,17 @@ class Question(models.Model):
     data = models.JSONField(default=dict)  # options, correct answer, pairs, etc.
     marks = models.PositiveIntegerField(default=1)
     order = models.PositiveIntegerField(default=1)
-    def __str__(self): return f"{self.lesson.title} - {self.qtype}"
+
+    def __str__(self):
+        return f"{self.lesson.title} - {self.qtype}"
+
 
 class Assignment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="assignments")
     title = models.CharField(max_length=160)
     instructions = models.TextField(blank=True)
     due_date = models.DateField(null=True, blank=True)
+
 
 class Submission(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="submissions")
@@ -85,6 +99,7 @@ class Submission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 class Progress(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="progress")
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="progress_entries")
@@ -92,7 +107,7 @@ class Progress(models.Model):
     stars = models.PositiveIntegerField(default=0)    # gamified
     last_step = models.PositiveIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
 
 class Test(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="tests")
@@ -103,6 +118,7 @@ class Test(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Result(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="results")
@@ -125,8 +141,7 @@ def create_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance, role=Role.STUDENT)
 
 
-#Attendance functionality
-
+# Attendance functionality
 class Attendance(models.Model):
     STATUS_CHOICES = [
         ("present", "Present"),
@@ -145,3 +160,28 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.date} - {self.status}"
+
+
+# Teacher Lesson Plans
+class LessonPlan(models.Model):
+    teacher = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name="lesson_plans"
+    )
+    strand = models.CharField(max_length=255)
+    sub_strand = models.CharField(max_length=255)
+    general_outcome = models.TextField()
+    specific_outcome1 = models.TextField()
+    specific_outcome2 = models.TextField(blank=True, null=True)
+    specific_outcome3 = models.TextField(blank=True, null=True)
+    enquiry_question = models.TextField()
+    introduction = models.TextField()
+    lesson_development = models.TextField()
+    conclusion = models.TextField()
+    reflection = models.TextField()
+    assignment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.strand} - {self.sub_strand} ({self.teacher.username})"

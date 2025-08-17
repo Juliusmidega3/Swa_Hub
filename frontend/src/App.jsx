@@ -10,7 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import TeacherAttendance from "./pages/TeacherAttendance";
 import { Toaster } from "react-hot-toast";
-import TeacherLessons from "./pages/TeacherLessons"; // ⬅️ import the new teacher lessons page
+import TeacherLessons from "./pages/TeacherLessons"; 
+import TeacherLessonPlan from "./pages/TeacherLessonPlan"; // ✅ Lesson Plan page
 
 // Helper component to protect routes
 const PrivateRoute = ({ children }) => {
@@ -55,6 +56,16 @@ function App() {
           element={
             <PrivateRoute>
               <TeacherLessons />
+            </PrivateRoute>
+          }
+        />
+
+        {/* ✅ Teacher Lesson Plan */}
+        <Route
+          path="/teacher-lesson-plans"
+          element={
+            <PrivateRoute>
+              <TeacherLessonPlan />
             </PrivateRoute>
           }
         />
